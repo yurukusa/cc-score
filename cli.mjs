@@ -65,9 +65,14 @@ function parseDateLocal(str) {
 
 // ── Load cc-agent-load ────────────────────────────────────────────────────────
 function loadData() {
+  // Fallback order:
+  //   1. npx cc-agent-load --json  (works if cc-agent-load is installed locally or globally via npm)
+  //   2. cc-agent-load --json      (found via PATH)
+  //   3. $HOME/bin/cc-agent-load   (manual global install location)
   const paths = [
+    ['npx', ['cc-agent-load', '--json']],
+    ['cc-agent-load', ['--json']],
     [join(HOME, 'bin', 'cc-agent-load'), ['--json']],
-    ['node', [join(HOME, 'projects', 'cc-loop', 'cc-agent-load', 'cli.mjs'), '--json']],
   ];
   for (const [cmd, cmdArgs] of paths) {
     try {
